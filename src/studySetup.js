@@ -61,14 +61,6 @@ const baseStudySetup = {
   // Study branches and sample weights, overweighing feature branches
   weightedVariations: [
     {
-      name: "feature-active",
-      weight: 1.5,
-    },
-    {
-      name: "feature-passive",
-      weight: 1.5,
-    },
-    {
       name: "control",
       weight: 1,
     },
