@@ -37,17 +37,13 @@ const baseStudySetup = {
   endings: {
     /** standard endings */
     "user-disable": {
-      baseUrls: [
-        "https://qsurvey.mozilla.com/s3/Shield-Study-Example-Survey/?reason=user-disable",
-      ],
+      baseUrls: [],
     },
     ineligible: {
       baseUrls: [],
     },
     expired: {
-      baseUrls: [
-        "https://qsurvey.mozilla.com/s3/Shield-Study-Example-Survey/?reason=expired",
-      ],
+      baseUrls: [],
     },
 
     /** Study specific endings */
