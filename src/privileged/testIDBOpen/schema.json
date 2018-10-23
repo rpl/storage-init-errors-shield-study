@@ -1,0 +1,32 @@
+[
+  {
+    "namespace": "testIDBOpen",
+    "description": "A tiny API to check if QuotaManagerService/IndexedDB are initializing successfully",
+    "apiVersion": 5,
+    "types": [
+      {
+        "id": "IDBOpenResult",
+        "type": "object",
+        "properties": {
+          "success": {
+            "type": "boolean"
+          },
+          "errorName": {
+            "type": "string",
+            "optional": true
+          }
+        },
+        "additionalProperties": false
+      }
+    ],
+    "functions": [
+      {
+        "name": "run",
+        "type": "function",
+        "async": true,
+        "description": "Check if QuotaManagerService/IndexedDB are initializing successfully. Resolves to a IDBOpenResult object",
+        "parameters": []
+      }
+    ]
+  }
+]
