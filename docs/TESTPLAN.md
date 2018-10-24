@@ -24,7 +24,7 @@
 
 ### Preparations
 
-- Download last Nightly and Beta versions of Firefox
+- Download last Nightly and Beta versions of Firefox (NOTE: Beta requires a signed shield addon study extension)
 - Run Firefox instance and apply the neeeded about:config changes to the profile before enrolling in the study:
   - Navigate to _about:config_ and set the following preferences. (If a preference does not exist, create it be right-clicking in the white area and selecting New -> String)
   - Set `shieldStudy.logLevel` to `All`. This permits shield-add-on log output in browser console.
