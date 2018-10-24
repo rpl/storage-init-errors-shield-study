@@ -1,5 +1,7 @@
 # "Storage initialization errors" v1 - Shield study
 
+[![CircleCI](https://circleci.com/gh/rpl/storage-init-errors-shield-study.svg?style=svg)](https://circleci.com/gh/rpl/storage-init-errors-shield-study)
+
 This shield study verifies if a user profile is affected by "Storage Initialization issues" which prevent IndexedDB
 databases to be opened, and then reports back with the results of the test as part of the `shield-study-addon`
 telemetry ping.
