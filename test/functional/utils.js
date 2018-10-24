@@ -4,7 +4,9 @@
 // We use it by requiring it.
 require("geckodriver");
 
-const TEST_FORCE_ENROLL_PREFNAME = "extensions.storage-init-errors-shield-study_shield_mozilla_org.test.forceEnroll";
+const addonWidgetId = "storage-init-errors-shield-study_shield_mozilla_org";
+const TEST_FORCE_ENROLL_PREFNAME = `extensions.${addonWidgetId}.test.forceEnroll`;
+const TEST_WAIT_TO_RUN_PREFNAME = `extensions.${addonWidgetId}.test.waitToRun`;
 
 // Preferences set during testing
 const FIREFOX_PREFERENCES = {
@@ -23,6 +25,9 @@ const FIREFOX_PREFERENCES = {
 
   // Force enroll during functional tests.
   [TEST_FORCE_ENROLL_PREFNAME]: true,
+
+  // Force the extension to wait for a small amount of time before eventually enrolling.
+  [TEST_WAIT_TO_RUN_PREFNAME]: 500,
 
   // Enable verbose shield study utils logging
   "shieldStudy.logLevel": "All",

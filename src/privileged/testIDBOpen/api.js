@@ -1,8 +1,9 @@
-/* global IndexedDB, Services, ExtensionCommon, ExtensionAPI, Cu */
+/* global IndexedDB, Services, ExtensionCommon, ExtensionUtils, ExtensionAPI, Cu */
 
 ChromeUtils.defineModuleGetter(this, "IndexedDB", "resource://gre/modules/IndexedDB.jsm");
 ChromeUtils.defineModuleGetter(this, "Services", "resource://gre/modules/Services.jsm");
 ChromeUtils.defineModuleGetter(this, "ExtensionCommon", "resource://gre/modules/ExtensionCommon.jsm");
+ChromeUtils.defineModuleGetter(this, "ExtensionUtils", "resource://gre/modules/ExtensionUtils.jsm");
 
 // The userContextID reserved for the extension storage, it is defined and reserved as
 // "userContextIdInternal.webextStorageLocal" in ContextualIdentityService.jsm.
@@ -27,16 +28,23 @@ this.testIDBOpen = class extends ExtensionAPI {
    */
   getAPI(context) {
     const {extension} = this;
+    const addonWidgetId = ExtensionCommon.makeWidgetId(extension.id);
 
     return {
       testIDBOpen: {
         async shouldEnroll() {
-          const addonWidgetId = ExtensionCommon.makeWidgetId(extension.id);
           const dataReporting = Services.prefs.getBoolPref("datareporting.policy.dataSubmissionEnabled", false);
           const testForceEnroll = Services.prefs.getBoolPref(`extensions.${addonWidgetId}.test.forceEnroll`, false);
+
           return dataReporting || testForceEnroll;
         },
         async run() {
+          // Used in test to force the extension to defer to run the experiment API during some of the functional tests.
+          const testWaitToRun = Services.prefs.getIntPref(`extensions.${addonWidgetId}.test.waitToRun`, 0);
+          if (testWaitToRun > 0) {
+            await ExtensionUtils.promiseTimeout(testWaitToRun);
+          }
+
           // Create a storagePrincipal like the one we use for the storage.local IDB backend (which use
           // the same principal of the extension with the addition in the principal originAttributes
           // of the userContextId that we have reserved for the storage.local IDB backend).
