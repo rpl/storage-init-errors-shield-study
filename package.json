@@ -21,8 +21,8 @@
     "npm-run-all": "^4.1.1",
     "nsp": "^3.2.1",
     "prettier": "^1.11.0",
-    "shelljs": "0.8.2",
-    "selenium-webdriver": "^3.6.0"
+    "selenium-webdriver": "^3.6.0",
+    "shelljs": "0.8.2"
   },
   "engines": {
     "npm": ">=6.1.0",
@@ -46,10 +46,10 @@
     "prestart": "npm run bundle-utils",
     "pretest": "node test/ensure_minimum_node_version.js && npm run build",
     "start": "web-ext run --no-reload",
-    "watch": "web-ext run",
     "test": "npm-run-all -n test:func",
     "test:func": "npm-run-all -pr test:func:*",
     "test:func:selenium-mocha": "FIREFOX_BINARY=${FIREFOX_BINARY:-nightly} ADDON_ZIP=dist/storage-init-errors-shield-study-1.0.0.zip GECKODRIVER_URL=http://127.0.0.1:4444 mocha test/functional/ --bail --full-trace",
-    "test:func:start-geckodriver-server": "geckodriver -vv 1> test/results/logs/geckodriver.log 2> test/results/logs/geckodriver.errors.log"
+    "test:func:start-geckodriver-server": "geckodriver -vv 1> test/results/logs/geckodriver.log 2> test/results/logs/geckodriver.errors.log",
+    "watch": "web-ext run"
   }
 }
