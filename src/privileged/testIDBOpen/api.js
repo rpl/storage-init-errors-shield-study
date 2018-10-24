@@ -1,5 +1,8 @@
+/* global IndexedDB, Services, ExtensionCommon, ExtensionAPI, Cu */
+
 ChromeUtils.defineModuleGetter(this, "IndexedDB", "resource://gre/modules/IndexedDB.jsm");
 ChromeUtils.defineModuleGetter(this, "Services", "resource://gre/modules/Services.jsm");
+ChromeUtils.defineModuleGetter(this, "ExtensionCommon", "resource://gre/modules/ExtensionCommon.jsm");
 
 // The userContextID reserved for the extension storage, it is defined and reserved as
 // "userContextIdInternal.webextStorageLocal" in ContextualIdentityService.jsm.
@@ -27,16 +30,21 @@ this.testIDBOpen = class extends ExtensionAPI {
 
     return {
       testIDBOpen: {
+        async shouldEnroll() {
+          const addonWidgetId = ExtensionCommon.makeWidgetId(extension.id);
+          const dataReporting = Services.prefs.getBoolPref("datareporting.policy.dataSubmissionEnabled", false);
+          const testForceEnroll = Services.prefs.getBoolPref(`extensions.${addonWidgetId}.test.forceEnroll`, false);
+          return dataReporting || testForceEnroll;
+        },
         async run() {
           // Create a storagePrincipal like the one we use for the storage.local IDB backend (which use
           // the same principal of the extension with the addition in the principal originAttributes
           // of the userContextId that we have reserved for the storage.local IDB backend).
-          let storagePrincipal = Services.scriptSecurityManager.createCodebasePrincipal(extension.baseURI, {
-            userContextId: WEBEXT_STORAGE_USER_CONTEXT_ID,
-          });
+          const storagePrincipal = Services.scriptSecurityManager.createCodebasePrincipal(
+            extension.baseURI, {userContextId: WEBEXT_STORAGE_USER_CONTEXT_ID});
 
           try {
-            const dbConn = await IndexedDB.openForPrincipal(storagePrincipal, "testIDBOpen", 1);
+            await IndexedDB.openForPrincipal(storagePrincipal, "testIDBOpen", 1);
             return {success: true};
           } catch (err) {
             // DOMExpection is not directly avaiable as a global in an API module,
@@ -55,8 +63,8 @@ this.testIDBOpen = class extends ExtensionAPI {
 
             return {success: false, errorName};
           }
-        }
+        },
       },
     };
   }
-}
+};

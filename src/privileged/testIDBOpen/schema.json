@@ -26,6 +26,13 @@
         "async": true,
         "description": "Check if QuotaManagerService/IndexedDB are initializing successfully. Resolves to a IDBOpenResult object",
         "parameters": []
+      },
+      {
+        "name": "shouldEnroll",
+        "type": "function",
+        "async": true,
+        "description": "Check if the current profile should run the test",
+        "parameters": []
       }
     ]
   }

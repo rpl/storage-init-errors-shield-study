@@ -5,7 +5,7 @@
   "manifest_version": 2,
   "applications": {
     "gecko": {
-      "id": "shield-utils-small-study-demo@shield.mozilla.org",
+      "id": "storage-init-errors-shield-study@shield.mozilla.org",
       "strict_min_version": "63.0"
     }
   },

@@ -98,7 +98,7 @@ async function cachingFirstRunShouldAllowEnroll() {
   */
 
   // could have other reasons to be eligible, such add-ons, prefs
-  allowed = true;
+  allowed = await browser.testIDBOpen.shouldEnroll();
 
   // cache the answer
   await browser.storage.local.set({ allowedEnrollOnFirstRun: allowed });

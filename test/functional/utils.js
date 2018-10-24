@@ -4,6 +4,8 @@
 // We use it by requiring it.
 require("geckodriver");
 
+const TEST_FORCE_ENROLL_PREFNAME = "extensions.storage-init-errors-shield-study_shield_mozilla_org.test.forceEnroll";
+
 // Preferences set during testing
 const FIREFOX_PREFERENCES = {
   // Ensure e10s is turned on.
@@ -19,9 +21,8 @@ const FIREFOX_PREFERENCES = {
   // Removing warning for `about:config`
   "general.warnOnAboutConfig": false,
 
-  // Force variation for testing
-  "extensions.button-icon-preference_shield_mozilla_org.test.variationName":
-    "kittens",
+  // Force enroll during functional tests.
+  [TEST_FORCE_ENROLL_PREFNAME]: true,
 
   // Enable verbose shield study utils logging
   "shieldStudy.logLevel": "All",
@@ -47,6 +48,7 @@ const { ui } = require("shield-studies-addon-utils/testUtils/ui");
 // What we expose to our add-on-specific tests
 module.exports = {
   FIREFOX_PREFERENCES,
+  TEST_FORCE_ENROLL_PREFNAME,
   executeJs,
   nav,
   setupWebdriver,

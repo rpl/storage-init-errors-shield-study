@@ -298,3 +298,79 @@ describe("setup of a study that expires within a few seconds should result in en
     });
   });
 });
+
+describe("ineligible study ending on profile with disabled telemetry", function() {
+  // This gives Firefox time to start, and us a bit longer during some of the tests.
+  this.timeout(25000);
+
+  let driver;
+  let beginTime;
+
+  // runs ONCE
+  before(async () => {
+    beginTime = Date.now();
+    const customPreferences = Object.assign({}, utils.FIREFOX_PREFERENCES);
+    customPreferences[
+      `datareporting.policy.dataSubmissionEnabled`
+    ] = false;
+    customPreferences[utils.TEST_FORCE_ENROLL_PREFNAME] = false;
+
+    driver = await utils.setupWebdriver.promiseSetupDriver(customPreferences);
+
+    await utils.setupWebdriver.installAddon(driver);
+  });
+
+  after(async () => {
+    driver.quit();
+  });
+
+  beforeEach(async () => {});
+  afterEach(async () => {});
+
+  describe("should have been ending as ineligible", function() {
+    let studyPings;
+
+    before(async () => {
+      // allow our shield study add-on some time to send initial pings
+      await driver.sleep(2000);
+      // collect sent pings
+      studyPings = await utils.telemetry.getShieldPingsAfterTimestamp(
+        driver,
+        beginTime,
+      );
+      // for debugging tests
+      // console.log("Pings report: ", utils.telemetry.pingsReport(studyPings));
+    });
+
+    it("sent expected telemetry", function() {
+      // Telemetry:  order, and summary of pings is good.
+      const filteredPings = studyPings.filter(
+        ping => ping.type === "shield-study",
+      );
+
+      const observed = utils.telemetry.summarizePings(filteredPings);
+      const expected = [
+        [
+          "shield-study",
+          {
+            study_state: "exit",
+          },
+        ],
+        [
+          "shield-study",
+          {
+            study_state: "ineligible",
+            study_state_fullname: "ineligible",
+          },
+        ],
+        [
+          "shield-study",
+          {
+            study_state: "enter",
+          },
+        ],
+      ];
+      assert.deepStrictEqual(observed, expected, "telemetry pings match");
+    });
+  });
+});
