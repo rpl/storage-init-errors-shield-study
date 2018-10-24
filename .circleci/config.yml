@@ -24,6 +24,10 @@ jobs:
           command: npm install
 
       - run:
+          name: Install web-ext
+          command: sudo npm install -g web-ext
+
+      - run:
           name:  Install different versions of Firefox
           command: |
             [ ! -d "./firefox-release" ] && npx get-firefox -b release -p linux -e && mv ./firefox ./firefox-release || true
@@ -35,6 +39,7 @@ jobs:
 
       - save_cache:
           paths:
+            - /root/.npm
             - node_modules
             - firefox-nightly
             - firefox-devedition
