@@ -1,0 +1,37 @@
+{
+  "name": "storage-init-errors-shield-study",
+  "description": "A tiny Shield Study which checks that QuotaManagerService/IndexedDB are initializing successfully",
+  "version": "1.0.0",
+  "manifest_version": 2,
+  "applications": {
+    "gecko": {
+      "id": "storage-init-errors-shield-study@shield.mozilla.org",
+      "strict_min_version": "63.0"
+    }
+  },
+  "experiment_apis": {
+    "study": {
+      "schema": "./privileged/study/schema.json",
+      "parent": {
+        "scopes": ["addon_parent"],
+        "script": "./privileged/study/api.js",
+        "paths": [["study"]]
+      }
+    },
+    "testIDBOpen": {
+      "schema": "./privileged/testIDBOpen/schema.json",
+      "parent": {
+        "scopes": ["addon_parent"],
+        "script": "./privileged/testIDBOpen/api.js",
+        "paths": [["testIDBOpen"]]
+      }
+    }
+  },
+  "permissions": ["storage", "alarms"],
+  "background": {
+    "scripts": ["studySetup.js", "background.js"]
+  },
+  "icons": {
+    "48": "icons/shield-icon.svg"
+  }
+}
