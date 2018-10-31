@@ -26,4 +26,4 @@ See [DEV.md](./docs/DEV.md) for more details on how to work with this add-on as 
 
 # History
 
-- "Storage initialization errors" v1 - [launch bug](https://bugzilla.mozilla.org/1502111) PHD (TODO: link to the PHD google doc)
+- "Storage initialization errors" v1 - [launch bug](https://bugzilla.mozilla.org/1502111) [PHD](https://docs.google.com/document/d/1oAJsjFDGov1FiovzkVA1OPM96KgmqL5bh2GkBM99VUQ)
