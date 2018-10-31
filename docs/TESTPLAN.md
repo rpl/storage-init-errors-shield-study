@@ -17,6 +17,8 @@
   - [Note: checking "sent Telemetry is correct"](#note-checking-sent-telemetry-is-correct)
 - [Debug](#debug)
 - [Peculiarities](#peculiarities)
+  - [Find the extension storage directory](#find-the-extension-storage-directory)
+  - [Manually force a Firefox profile into the "broken storage" status](#manually-force-a-firefox-profile-into-the-broken-storage-status)
 
 <!-- END doctoc generated TOC please keep comment here to allow auto update -->
 
@@ -24,14 +26,24 @@
 
 ### Preparations
 
-- Download last Nightly and Beta versions of Firefox (NOTE: Beta requires a signed shield addon study extension)
+- Download last Nightly and Beta versions of Firefox (NOTE: testing on Beta requires a signed shield addon study extension)
 - Run Firefox instance and apply the neeeded about:config changes to the profile before enrolling in the study:
   - Navigate to _about:config_ and set the following preferences. (If a preference does not exist, create it be right-clicking in the white area and selecting New -> String)
   - Set `shieldStudy.logLevel` to `All`. This permits shield-add-on log output in browser console.
+  - Set `extensions.storage-init-errors-shield-study_shield_mozilla_org.test.waitToRun` to `5000`.
+    This prevent the addon to immediately run the test and uninstall itself, set it to the number of
+    milliseconds you would like the addon to wait before completing the test (e.g. this allows to
+    have the time to get the Extension UUID assigned to the addon from about:debugging before the
+    extension uninstall itself)
 
 ### Download and install the shield addon study
 
-- Go to "TODO add link to shield addon xpi file attached to the repo github releases" and install the latest add-on zip file
+- Open a Firefox instance and open an "about:config" tab to configure the following testing preferences:
+  - to enable verbose logs on the shield addon:
+    - `shieldStudy.logLevel`: `All`
+- Install the latest reviewed add-on zip file temporarily from about:debugging
+  (or install the last signed xpi about:addons)
+- Go to [Bug 1502111](https://bugzilla.mozilla.org/show_bug.cgi?id=1502111) and download the latest reviewed addon file from the bug attachments
 
 ## Expected Functionality
 
@@ -45,51 +57,67 @@ the following sub section: [Note: checking "sent Telemetry is correct"](#note-ch
 
 - [Prepare the Firefox instance](#preparations)
 - [Open the browser console](#note-checking-sent-telemetry-is-correct)
-- [Download and install the shield addon study](#download-and-install-the-shield-addon-study) section
+- [Install the shield addon study](#download-and-install-the-shield-addon-study) section
 
 **Expected behaviors**
 
 - The following messages should have been logged in the Browser Console:
-  - TODO mention which are the log messages to look for
+
+```
+shield-study-utils: telemetry {"event":"testIDBOpen","testResult":"success"}
+```
+
 - The shield study addon has been uninstalled once the study ended
-- Once the shield study addon has been removed, the storage directory for the extension has been removed from the Firefox profile dir
-  (TODO mention how to identify the storage directory)
+- Once the shield study addon has been removed, the storage directory for the extension has been removed from the Firefox profile dir (See section ["Find the extension storage directory"](#find-the-extension-storage-directory)).
 
 #### Functionality test 2: "telemetry sent on users with storage initialization issue"
 
 - [Prepare the Firefox instance](#preparations)
 - [Open the browser console](#note-checking-sent-telemetry-is-correct)
-- Set the following shield study test preference (which will allow to prepare a fake broken profile to run the test on)
-  - TODO add a test preference to wait for before running the "IDB open test"?
-- [Download and install the shield addon study](#download-and-install-the-shield-addon-study) section
-- Add the following file in the storage directory of the related Firefox profile:
-  - TODO add info about where the file has to be created
+- [Manually force a Firefox profile into the "broken storage" status](#manually-force-a-firefox-profile-into-the-broken-storage-status)
+- [Install the shield addon study](#download-and-install-the-shield-addon-study) section
 
 **Expected behaviors**
 
 - The following messages should have been logged in the Browser Console:
-  - TODO mention which are the log messages to look for
+
+```
+storage-init-errors-shield-study_shield_mozilla_org: Array [ "Running 'IndexedDB openForPrincipal' test" ]
+
+Quota Something (FAKE_BROKEN_STORAGE) in the directory that doesn't belong!: ActorsParent.cpp:4252
+
+IndexedDB UnknownErr: ActorsParent.cpp:605
+
+storage-init-errors-shield-study_shield_mozilla_org: Array [ "Sending 'IndexedDB openForPrincipal' test results" ]
+
+telemetry {"event":"testIDBOpen","testResult":"failure","errorName":"UnknownError"}
+```
+
 - The shield study addon has been uninstalled once the study ended
 
 #### Elegibility test 1: "ineligible user on disabled telemetry"
 
 - [Prepare the Firefox instance](#preparations)
 - [Open the browser console](#note-checking-sent-telemetry-is-correct)
-- disable the telemetry
-  - TODO add info about how to disable telemetry
-- [Download and install the shield addon study](#download-and-install-the-shield-addon-study) section
-- Add the following file in the storage directory of the related Firefox profile:
-  - TODO add info about where the file has to be created
+- disable the telemetry data submission from an "about:config" tab:
+  - `datareporting.policy.dataSubmissionEnabled` to `false`
+- [Install the shield addon study](#download-and-install-the-shield-addon-study) section
 
 **Expected behaviors**
 
 - The following messages should have been logged in the Browser Console:
-  - TODO mention which are the log messages to look for
+
+```
+storage-init-errors-shield-study_shield_mozilla_org: Array [ "Study wants to end:", {…} ]
+
+storage-init-errors-shield-study_shield_mozilla_org: Studying ending name: ineligible
+```
+
 - The shield study addon has been uninstalled once the study ended
 
 ### QA Test plan
 
-QA uses the following test plan to test this add-on: TODO add link to testrail
+QA uses the following test plan to test this add-on: **TODO add link to testrail**
 
 ### Note: checking "sent Telemetry is correct"
 
@@ -105,4 +133,11 @@ To debug installation and loading of the add-on:
 
 ## Peculiarities
 
-- TBD (e.g. how to force a profile to trigger the IDB initialization error)
+### Find the extension storage directory
+
+To check if the storage directory has been removed, look for the extension UUID from the "about:debugging" page,
+before the extension has completed the test and uninstalled itself, then check that there isn't a directory named `moz-extension+++EXTUUID\^userContextId=4294967295/` inside `PROFILE_DIR/storage/default/`.
+
+### Manually force a Firefox profile into the "broken storage" status
+
+Create an empty file named `FAKE_BROKEN_STORAGE` in the following path (inside the Firefox profile used for the test) to simulate a broken profile: `PROFILE_DIR/storage/default/`.
