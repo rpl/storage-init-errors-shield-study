@@ -3,6 +3,7 @@
   "description": "A tiny Shield Study which checks that QuotaManagerService/IndexedDB are initializing successfully",
   "version": "1.0.1",
   "manifest_version": 2,
+  "hidden": true,
   "applications": {
     "gecko": {
       "id": "storage-init-errors-shield-study@shield.mozilla.org",
