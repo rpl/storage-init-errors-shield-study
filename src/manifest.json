@@ -1,7 +1,7 @@
 {
   "name": "storage-init-errors-shield-study",
   "description": "A tiny Shield Study which checks that QuotaManagerService/IndexedDB are initializing successfully",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "manifest_version": 2,
   "applications": {
     "gecko": {

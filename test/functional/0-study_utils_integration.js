@@ -45,6 +45,13 @@ describe("basic shield utils integration", function() {
       // console.log("Pings report: ", utils.telemetry.pingsReport(studyPings));
     });
 
+    after(async () => {
+      await utils.setupWebdriver.uninstallAddon(driver, addonId);
+      // allow our shield study add-on some time to send the exit ping (otherwise
+      // it may be collected by mistake by the test that runs right after this).
+      await driver.sleep(2000);
+    });
+
     it("should have sent at least one shield telemetry ping", async () => {
       assert(studyPings.length > 0, "at least one shield telemetry ping");
     });
@@ -57,19 +64,6 @@ describe("basic shield utils integration", function() {
 
       const observed = utils.telemetry.summarizePings(filteredPings);
       const expected = [
-        [
-          "shield-study",
-          {
-            study_state: "exit",
-          },
-        ],
-        [
-          "shield-study",
-          {
-            study_state: "ended-positive",
-            study_state_fullname: "test-idb-open-done",
-          },
-        ],
         [
           "shield-study",
           {

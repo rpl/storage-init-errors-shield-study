@@ -127,11 +127,6 @@ class StudyLifeCycleHandler {
           errorName: String(errorName),
         });
       }
-
-      // TODO: double-check is we should end the study here explicitly and
-      // which could be the most reasonable study ending to use in our case:
-      // "ineligible", "expired", "user-disable", "ended-positive", "ended-neutral", "ended-negative",
-      await browser.study.endStudy("test-idb-open-done");
     } catch (err) {
       // TODO: explicitly end the study here as "ineligible"?
       await browser.study.logger.log(["Error during 'IndexedDB openForPrincipal' test", err.message]);
