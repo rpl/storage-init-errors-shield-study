@@ -45,17 +45,6 @@ const baseStudySetup = {
     expired: {
       baseUrls: [],
     },
-
-    /** Study specific endings */
-    "test-idb-open-done": {
-      category: "ended-positive",
-    },
-
-    /** TODO: could it be better to use to separate study ending for the idb test result?
-    "idb-open-failure": {
-      category: "ended-negative",
-    },
-    */
   },
 
   // Study branches and sample weights, overweighing feature branches
